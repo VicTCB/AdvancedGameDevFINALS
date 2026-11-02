@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cake_Wars")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41401933ec4a9d67e1de68db70ce9c9c31030df0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cake_Wars")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cake_Wars")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
