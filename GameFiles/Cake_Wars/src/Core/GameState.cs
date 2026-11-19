@@ -17,6 +17,21 @@ public class FlavorOption
 public class GameState
 {
     // Cake & Base Health
+    public string[] LayerFlavors = { "ube", "ube", "ube" };
+    private int nextFlavorSlot = 1; // 1st quest colors Middle layer, 2nd quest colors Top layer
+
+    public void AssignNextFlavor(string flavorKey)
+    {
+        if (nextFlavorSlot < 3)
+        {
+            LayerFlavors[nextFlavorSlot] = flavorKey;
+            nextFlavorSlot++;
+        }
+        else
+        {
+            LayerFlavors[0] = flavorKey; // 3rd quest updates Bottom layer
+        }
+    }
     public float CakeHp = 1200f;
     public float MaxCakeHp = 1200f;
     public int CakeLayersUnlocked = 1;
@@ -59,9 +74,9 @@ public class GameState
 
     public GameState()
     {
-        CakeTurrets[0] = new TurretSlot { RelativeOffset = new Vector2(70, -65), Unlocked = true };
-        CakeTurrets[1] = new TurretSlot { RelativeOffset = new Vector2(60, -125), Unlocked = false };
-        CakeTurrets[2] = new TurretSlot { RelativeOffset = new Vector2(50, -185), Unlocked = false };
+        CakeTurrets[0] = new TurretSlot { RelativeOffset = new Vector2(95, -65), Unlocked = true };
+        CakeTurrets[1] = new TurretSlot { RelativeOffset = new Vector2(95, -165), Unlocked = false };
+        CakeTurrets[2] = new TurretSlot { RelativeOffset = new Vector2(95, -255), Unlocked = false };
 
         InitFlavorPool();
     }
@@ -76,7 +91,7 @@ public class GameState
                 BuffDescription = "+25% Ally Attack Damage",
                 QuestDescription = "Kill 8 Bugs",
                 TargetCount = 8,
-                ApplyBuff = () => { AllyDamageMultiplier += 0.25f; }
+                ApplyBuff = () => { AllyDamageMultiplier += 0.25f; AssignNextFlavor("choco"); }
             },
             new FlavorOption
             {
@@ -84,7 +99,7 @@ public class GameState
                 BuffDescription = "+30% Ally Max Health",
                 QuestDescription = "Kill 10 Bugs",
                 TargetCount = 10,
-                ApplyBuff = () => { AllyDefenseMultiplier += 0.30f; }
+                ApplyBuff = () => { AllyDefenseMultiplier += 0.30f; AssignNextFlavor("pista"); }
             },
             new FlavorOption
             {
@@ -92,7 +107,7 @@ public class GameState
                 BuffDescription = "+10 Passive Crumbs / sec",
                 QuestDescription = "Kill 6 Bugs",
                 TargetCount = 6,
-                ApplyBuff = () => { CrumbRate += 10f; }
+                ApplyBuff = () => { CrumbRate += 10f; AssignNextFlavor("mint"); }
             },
             new FlavorOption
             {
@@ -100,7 +115,31 @@ public class GameState
                 BuffDescription = "Ultimate cooldown cut by 40%",
                 QuestDescription = "Kill 12 Bugs",
                 TargetCount = 12,
-                ApplyBuff = () => { UltimateCooldownMax *= 0.6f; }
+                ApplyBuff = () => { UltimateCooldownMax *= 0.6f; AssignNextFlavor("ube"); }
+            },
+            new FlavorOption
+            {
+                Name = "Red Velvet",
+                BuffDescription = "+35% Ally Attack Damage",
+                QuestDescription = "Kill 10 Bugs",
+                TargetCount = 10,
+                ApplyBuff = () => { AllyDamageMultiplier += 0.35f; AssignNextFlavor("red"); }
+            },
+            new FlavorOption
+            {
+                Name = "Cheese",
+                BuffDescription = "+400 Max Cake HP & Heal",
+                QuestDescription = "Kill 8 Bugs",
+                TargetCount = 8,
+                ApplyBuff = () => { MaxCakeHp += 400f; CakeHp = Math.Min(MaxCakeHp, CakeHp + 400f); AssignNextFlavor("cheese"); }
+            },
+            new FlavorOption
+            {
+                Name = "Carrot",
+                BuffDescription = "+15 Passive Crumbs / sec",
+                QuestDescription = "Kill 9 Bugs",
+                TargetCount = 9,
+                ApplyBuff = () => { CrumbRate += 15f; AssignNextFlavor("carrot"); }
             }
         };
     }

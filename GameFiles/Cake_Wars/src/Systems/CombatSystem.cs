@@ -32,6 +32,7 @@ public static class CombatSystem
         for (int i = state.Units.Count - 1; i >= 0; i--)
         {
             var u = state.Units[i];
+            if (u.AttackVisualTimer > 0) u.AttackVisualTimer -= dt; // <-- MOVED HERE (runs every frame)
             u.Speed = u.BaseSpeed;
 
             if (u.StunTimer > 0)
@@ -55,6 +56,7 @@ public static class CombatSystem
                 {
                     state.CakeHp -= u.Damage;
                     u.AttackTimer = u.AttackCooldown;
+                    u.AttackVisualTimer = 0.18f;
                 }
                 continue;
             }
@@ -131,6 +133,7 @@ public static class CombatSystem
                     }
 
                     u.AttackTimer = u.AttackCooldown;
+                    u.AttackVisualTimer = 0.18f; // Snappy 0.18s attack frame
                 }
             }
             else if (!blockedByFriend)

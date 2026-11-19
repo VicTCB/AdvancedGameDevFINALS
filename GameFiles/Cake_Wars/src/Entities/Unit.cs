@@ -17,6 +17,7 @@ public class Unit
     public float AttackRange;
     public float AttackCooldown;
     public float AttackTimer;
+    public float AttackVisualTimer;
     public int CrumbReward;
     public float ExpReward;
     public float StunTimer;

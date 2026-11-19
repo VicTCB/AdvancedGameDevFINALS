@@ -12,6 +12,7 @@ class Program
     {
         Raylib.InitWindow(GameConfig.ScreenWidth, GameConfig.ScreenHeight, "Cake Wars - Clean Architecture");
         Raylib.SetTargetFPS(60);
+        AssetManager.LoadAll();
 
         camera = new Camera2D
         {
@@ -40,7 +41,22 @@ class Program
 
             Raylib.BeginMode2D(camera);
 
-            Raylib.DrawRectangle(0, (int)GameConfig.GroundY, (int)GameConfig.TableWidth, GameConfig.ScreenHeight - (int)GameConfig.GroundY, new Color(185, 135, 95, 255));
+            if (AssetManager.HasBackground)
+            {
+                float parallaxFactor = 0.5f; 
+                int bgX = (int)(camera.Target.X * parallaxFactor);
+                Raylib.DrawTexture(AssetManager.BackgroundTex, bgX, 0, Color.White);
+            }
+
+            // 2. Wooden Table Ground (2400x180 at Y = 540)
+            if (AssetManager.HasTable)
+            {
+                Raylib.DrawTexture(AssetManager.TableTex, 0, (int)GameConfig.GroundY, Color.White);
+            }
+            else
+            {
+                Raylib.DrawRectangle(0, (int)GameConfig.GroundY, (int)GameConfig.TableWidth, GameConfig.ScreenHeight - (int)GameConfig.GroundY, new Color(185, 135, 95, 255));
+            }
 
             UIRenderer.DrawCake(state);
 
@@ -92,20 +108,58 @@ class Program
             // Units
             foreach (var u in state.Units)
             {
-                Color boxColor = u.Faction == Faction.Ally ? Color.Beige : Color.Maroon;
-                if (u.Type == UnitType.Flying) boxColor = u.Faction == Faction.Ally ? Color.Gold : Color.Purple;
-                if (u.Type == UnitType.Mount) boxColor = u.Faction == Faction.Ally ? Color.Orange : new Color(100, 60, 30, 255);
-                if (u.StunTimer > 0) boxColor = Color.SkyBlue;
+                bool isAttacking = u.AttackVisualTimer > 0;
+                bool hasSprite = AssetManager.IdleTextures.ContainsKey(u.Name);
+                float drawSize = hasSprite ? AssetManager.SpriteSizes[u.Name] : u.Size.Y;
 
-                Raylib.DrawRectangleV(u.Position, u.Size, boxColor);
-                Raylib.DrawRectangleLines((int)u.Position.X, (int)u.Position.Y, (int)u.Size.X, (int)u.Size.Y, Color.Black);
+                if (hasSprite)
+                {
+                    bool hasAttackTex = isAttacking && AssetManager.AttackTextures.ContainsKey(u.Name);
+                    Texture2D tex = hasAttackTex ? AssetManager.AttackTextures[u.Name] : AssetManager.IdleTextures[u.Name];
 
+                    // Subtle walk bounce when moving
+                    float walkBobY = 0f;
+                    if (!isAttacking && u.StunTimer <= 0)
+                    {
+                        walkBobY = MathF.Abs(MathF.Sin((float)Raylib.GetTime() * 10f + u.Position.X * 0.05f)) * -5f;
+                    }
+
+                    // Forward tilt if attacking without a dedicated attack sprite
+                    float rotation = (isAttacking && !hasAttackTex) ? 12f : 0f;
+
+                    Rectangle source = new Rectangle(0, 0, tex.Width, tex.Height);
+                    Rectangle dest = new Rectangle(
+                        u.Position.X + (u.Size.X / 2f),
+                        (u.Position.Y + u.Size.Y) + 4f + walkBobY,
+                        drawSize,
+                        drawSize
+                    );
+
+                    Vector2 origin = new Vector2(drawSize / 2f, drawSize);
+                    Color tint = u.StunTimer > 0 ? Color.SkyBlue : Color.White;
+                    Raylib.DrawTexturePro(tex, source, dest, origin, rotation, tint);
+                }
+                else
+                {
+                    // Fallback placeholder box
+                    Color boxColor = u.Faction == Faction.Ally ? Color.Beige : Color.Maroon;
+                    if (u.Type == UnitType.Flying) boxColor = u.Faction == Faction.Ally ? Color.Gold : Color.Purple;
+                    if (u.Type == UnitType.Mount) boxColor = u.Faction == Faction.Ally ? Color.Orange : new Color(100, 60, 30, 255);
+                    if (u.StunTimer > 0) boxColor = Color.SkyBlue;
+
+                    Raylib.DrawRectangleV(u.Position, u.Size, boxColor);
+                    Raylib.DrawRectangleLines((int)u.Position.X, (int)u.Position.Y, (int)u.Size.X, (int)u.Size.Y, Color.Black);
+                }
+
+                // Health bar & Name (positioned cleanly above the character's head)
                 float healthPct = Math.Clamp(u.Hp / u.MaxHp, 0f, 1f);
-                Raylib.DrawRectangle((int)u.Position.X, (int)u.Position.Y - 10, (int)u.Size.X, 5, Color.Red);
-                Raylib.DrawRectangle((int)u.Position.X, (int)u.Position.Y - 10, (int)(u.Size.X * healthPct), 5, Color.Green);
+                int barY = hasSprite ? (int)(u.Position.Y + u.Size.Y - (drawSize * 0.85f)) : (int)u.Position.Y - 12;
+                
+                Raylib.DrawRectangle((int)u.Position.X, barY, (int)u.Size.X, 5, Color.Red);
+                Raylib.DrawRectangle((int)u.Position.X, barY, (int)(u.Size.X * healthPct), 5, Color.Green);
 
                 string label = u.StunTimer > 0 ? "FROZEN" : u.Name;
-                Raylib.DrawText(label, (int)u.Position.X, (int)u.Position.Y - 22, 10, u.StunTimer > 0 ? Color.Blue : Color.DarkGray);
+                Raylib.DrawText(label, (int)u.Position.X, barY - 12, 10, u.StunTimer > 0 ? Color.Blue : Color.DarkGray);
             }
 
             // Ultimate Reticle
@@ -147,7 +201,7 @@ class Program
 
             Raylib.EndDrawing();
         }
-
+        AssetManager.UnloadAll();
         Raylib.CloseWindow();
     }
 

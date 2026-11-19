@@ -7,28 +7,30 @@ public static class UIRenderer
 {
     public static void DrawCake(GameState state)
     {
-        Color tierFrostingColor = state.CakeTier switch
-        {
-            2 => Color.Pink,
-            3 => Color.White,
-            _ => new Color(220, 175, 115, 255)
-        };
+        int tier = state.CakeTier;
 
-        Raylib.DrawRectangle(20, (int)GameConfig.GroundY - 80, 160, 80, new Color(240, 190, 130, 255));
-        Raylib.DrawRectangle(20, (int)GameConfig.GroundY - 80, 160, 10, tierFrostingColor);
+        float cakeW = 220f;
+        float cakeH = 110f;
+        float cakeX = 15f;
 
+        // Layer 1: Bottom
+        DrawCakeLayer(state.LayerFlavors[0], "bottom", tier, new Rectangle(cakeX, GameConfig.GroundY - cakeH, cakeW, cakeH), new Color(240, 190, 130, 255));
+
+        // Layer 2: Middle (spaced cleanly above Layer 1)
         if (state.CakeLayersUnlocked >= 2)
         {
-            Raylib.DrawRectangle(35, (int)GameConfig.GroundY - 140, 130, 60, new Color(245, 205, 145, 255));
-            Raylib.DrawRectangle(35, (int)GameConfig.GroundY - 140, 130, 10, tierFrostingColor);
+            float layer2Y = GameConfig.GroundY - cakeH - 102f;
+            DrawCakeLayer(state.LayerFlavors[1], "middle", tier, new Rectangle(cakeX, layer2Y, cakeW, cakeH), new Color(245, 205, 145, 255));
         }
 
+        // Layer 3: Top (spaced cleanly above Layer 2)
         if (state.CakeLayersUnlocked >= 3)
         {
-            Raylib.DrawRectangle(50, (int)GameConfig.GroundY - 190, 100, 50, new Color(250, 215, 160, 255));
-            Raylib.DrawRectangle(50, (int)GameConfig.GroundY - 190, 100, 10, tierFrostingColor);
+            float layer3Y = GameConfig.GroundY - cakeH - 102f - 92f;
+            DrawCakeLayer(state.LayerFlavors[2], "top", tier, new Rectangle(cakeX, layer3Y, cakeW, cakeH), new Color(250, 215, 160, 255));
         }
 
+        // Turrets on their respective layer slots
         for (int i = 0; i < 3; i++)
         {
             Vector2 pos = new Vector2(20, GameConfig.GroundY) + state.CakeTurrets[i].RelativeOffset;
@@ -45,6 +47,23 @@ public static class UIRenderer
                     Raylib.DrawRectangleLines((int)pos.X, (int)pos.Y, 20, 20, Color.DarkGray);
                 }
             }
+        }
+    }
+
+    private static void DrawCakeLayer(string flavor, string position, int tier, Rectangle destRect, Color fallbackColor)
+    {
+        string key = $"{flavor}_{position}_{tier}";
+
+        if (AssetManager.CakeTextures.TryGetValue(key, out Texture2D tex))
+        {
+            Rectangle source = new Rectangle(0, 0, tex.Width, tex.Height);
+            Raylib.DrawTexturePro(tex, source, destRect, Vector2.Zero, 0f, Color.White);
+        }
+        else
+        {
+            // Fallback rectangle if texture isn't found
+            Raylib.DrawRectangleRec(destRect, fallbackColor);
+            Raylib.DrawRectangleLinesEx(destRect, 1, Color.DarkBrown);
         }
     }
 
