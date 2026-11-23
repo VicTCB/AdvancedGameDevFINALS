@@ -276,7 +276,7 @@ class Program
         {
             if (state.CakeTier >= 3)
             {
-                state.UltimateTimer = 45f;
+                state.UltimateTimer = state.GetUltimateCooldown();
                 state.UltimateTargetingActive = false;
                 state.DampClothSweepX = 0f;
 
@@ -300,7 +300,7 @@ class Program
 
                 if (state.CakeTier == 1)
                 {
-                    state.UltimateTimer = 15f;
+                    state.UltimateTimer = state.GetUltimateCooldown();
                     state.UltimateTargetingActive = false;
 
                     for (int uIdx = state.Units.Count - 1; uIdx >= 0; uIdx--)
@@ -319,7 +319,7 @@ class Program
                 }
                 else if (state.CakeTier == 2)
                 {
-                    state.UltimateTimer = 25f;
+                    state.UltimateTimer = state.GetUltimateCooldown();
                     state.UltimateTargetingActive = false;
 
                     state.ActiveClouds.Add(new GasCloud
@@ -351,7 +351,8 @@ class Program
         if (state.EnemySpawnTimer <= 0)
         {
             SpawnerSystem.SpawnEnemyWave(state);
-            state.EnemySpawnTimer = Math.Max(1.8f, 4.0f - (state.CakeTier * 0.6f) - (state.GameElapsedTime / 120f));
+            state.EnemySpawnTimer = Math.Max(GameConfig.SpawnIntervalFloor,
+                GameConfig.SpawnIntervalStart - (state.GameElapsedTime / GameConfig.SpawnIntervalRampSeconds));
         }
 
         // 6. Combat Updates
@@ -363,6 +364,8 @@ class Program
         if (state.CakeTier < 3 && state.CakeExp >= state.ExpMilestones[state.CakeTier])
         {
             state.CakeTier++;
+            state.MaxCakeHp += GameConfig.CakeHpPerLevelUp;
+            state.CakeHp += GameConfig.CakeHpPerLevelUp;
         }
 
         if (state.CakeHp <= 0) state.CurrentPhase = GamePhase.GameOver;
@@ -421,9 +424,9 @@ class Program
                 });
             }
 
-            int rCost = state.CakeTier == 1 ? 50 : (state.CakeTier == 2 ? 80 : 120);
+            int rCost = GameConfig.RangedUnitCost(state.CakeTier);
             string rName = state.CakeTier == 1 ? "Cookie Dough" : (state.CakeTier == 2 ? "Baked Cookie" : "Choco Cookie");
-            float rHp = (state.CakeTier == 1 ? 65f : (state.CakeTier == 2 ? 100f : 150f)) * state.AllyDefenseMultiplier;
+            float rHp = (state.CakeTier == 1 ? 81f : (state.CakeTier == 2 ? 125f : 188f)) * state.AllyDefenseMultiplier;
             float rSpeed = state.CakeTier == 1 ? 60f : (state.CakeTier == 2 ? 65f : 65f);
             float rDmg = (state.CakeTier == 1 ? 14f : (state.CakeTier == 2 ? 24f : 38f)) * state.AllyDamageMultiplier;
             float rRange = state.CakeTier == 1 ? 250f : (state.CakeTier == 2 ? 280f : 320f);
@@ -497,7 +500,7 @@ class Program
         }
         else if (state.ActiveTab == BottomTab.Cake)
         {
-            int layerCost = state.CakeLayersUnlocked == 1 ? 120 : (state.CakeLayersUnlocked == 2 ? 250 : 0);
+            int layerCost = GameConfig.LayerCost(state.CakeLayersUnlocked);
             Rectangle layerBtn = new Rectangle(20, 646, 260, 60);
 
             if (state.CakeLayersUnlocked < 3 && Raylib.CheckCollisionPointRec(m, layerBtn) && state.Crumbs >= layerCost)
@@ -558,7 +561,7 @@ class Program
                     slot.IsFlamethrower = true;
                     slot.Type = state.CakeTier == 1 ? TurretType.BirthdayCandle : (state.CakeTier == 2 ? TurretType.FireworkCandle : TurretType.CremeBruleeTorch);
                     slot.Range = state.CakeTier == 3 ? 240f : 180f;
-                    slot.Damage = state.CakeTier == 1 ? 8f : (state.CakeTier == 2 ? 16f : 30f);
+                    slot.Damage = state.CakeTier == 1 ? 4f : (state.CakeTier == 2 ? 8f : 15f);
                     slot.Cooldown = 0.25f;
                     break;
                 }

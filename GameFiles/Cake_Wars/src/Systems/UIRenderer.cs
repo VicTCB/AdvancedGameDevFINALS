@@ -150,7 +150,7 @@ public static class UIRenderer
             float gTime = state.CakeTier == 1 ? 2.0f : (state.CakeTier == 2 ? 3.0f : 4.5f);
             DrawActionButton(new Rectangle(20, 646, 170, 60), gName, $"{gCost}c | {gTime:F1}s", state.Crumbs >= gCost && state.OvenQueue.Count < 4, m);
 
-            int rCost = state.CakeTier == 1 ? 50 : (state.CakeTier == 2 ? 80 : 120);
+            int rCost = GameConfig.RangedUnitCost(state.CakeTier);
             string rName = state.CakeTier == 1 ? "Cookie Dough" : (state.CakeTier == 2 ? "Baked Cookie" : "Choco Cookie");
             float rTime = state.CakeTier == 1 ? 3.5f : (state.CakeTier == 2 ? 4.0f : 5.0f);
             DrawActionButton(new Rectangle(200, 646, 170, 60), rName, $"{rCost}c | {rTime:F1}s", state.Crumbs >= rCost && state.OvenQueue.Count < 4, m);
@@ -167,7 +167,7 @@ public static class UIRenderer
         }
         else if (state.ActiveTab == BottomTab.Cake)
         {
-            int layerCost = state.CakeLayersUnlocked == 1 ? 120 : (state.CakeLayersUnlocked == 2 ? 250 : 0);
+            int layerCost = GameConfig.LayerCost(state.CakeLayersUnlocked);
             Rectangle layerBtn = new Rectangle(20, 646, 260, 60);
 
             if (state.CakeLayersUnlocked < 3)

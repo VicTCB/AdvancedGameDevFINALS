@@ -77,39 +77,40 @@ public static class SpawnerSystem
     {
         Random rnd = new Random();
         int categoryRoll = rnd.Next(0, 100);
+        int enemyTier = state.EnemyTier; // enemies evolve on their own timer, not the player's tier
 
         if (categoryRoll < 40)
         {
-            if (state.CakeTier == 1 || rnd.Next(0, 2) == 0)
+            if (enemyTier == 1 || rnd.Next(0, 2) == 0)
                 SpawnUnit(state, "Small Red Ant", Faction.Enemy, UnitType.Ground, GameConfig.TableWidth - 140f, 80f, 80f, 12f, 35f, 0.9f, 15, 25f);
-            else if (state.CakeTier == 2 || rnd.Next(0, 2) == 0)
+            else if (enemyTier == 2 || rnd.Next(0, 2) == 0)
                 SpawnUnit(state, "Big Red Ant", Faction.Enemy, UnitType.Ground, GameConfig.TableWidth - 140f, 160f, 70f, 22f, 40f, 1.1f, 25, 40f);
             else
                 SpawnUnit(state, "Beetle", Faction.Enemy, UnitType.Ground, GameConfig.TableWidth - 140f, 280f, 55f, 32f, 40f, 1.2f, 40, 60f);
         }
         else if (categoryRoll < 68)
         {
-            if (state.CakeTier == 1)
+            if (enemyTier == 1)
                 SpawnUnit(state, "Bombardier", Faction.Enemy, UnitType.Ranged, GameConfig.TableWidth - 140f, 65f, 60f, 16f, 220f, 1.5f, 25, 40f);
-            else if (state.CakeTier == 2)
+            else if (enemyTier == 2)
                 SpawnUnit(state, "Spitter Spider", Faction.Enemy, UnitType.Ranged, GameConfig.TableWidth - 140f, 110f, 65f, 25f, 250f, 1.3f, 35, 55f);
             else
                 SpawnUnit(state, "Wasp Shooter", Faction.Enemy, UnitType.Ranged, GameConfig.TableWidth - 140f, 170f, 75f, 38f, 290f, 1.1f, 50, 75f);
         }
         else if (categoryRoll < 88)
         {
-            if (state.CakeTier == 1)
+            if (enemyTier == 1)
                 SpawnUnit(state, "Fruit Fly", Faction.Enemy, UnitType.Flying, GameConfig.TableWidth - 140f, 70f, 95f, 14f, 140f, 1.0f, 30, 45f);
-            else if (state.CakeTier == 2)
+            else if (enemyTier == 2)
                 SpawnUnit(state, "House Fly", Faction.Enemy, UnitType.Flying, GameConfig.TableWidth - 140f, 120f, 105f, 22f, 160f, 0.9f, 45, 60f);
             else
                 SpawnUnit(state, "Flying Roach", Faction.Enemy, UnitType.Flying, GameConfig.TableWidth - 140f, 190f, 115f, 34f, 180f, 0.85f, 65, 85f);
         }
         else
         {
-            if (state.CakeTier == 1)
+            if (enemyTier == 1)
                 SpawnUnit(state, "Mantis", Faction.Enemy, UnitType.Mount, GameConfig.TableWidth - 140f, 350f, 45f, 38f, 55f, 1.6f, 55, 75f);
-            else if (state.CakeTier == 2)
+            else if (enemyTier == 2)
                 SpawnUnit(state, "Mouse", Faction.Enemy, UnitType.Mount, GameConfig.TableWidth - 140f, 550f, 40f, 55f, 55f, 1.8f, 85, 110f);
             else
                 SpawnUnit(state, "Kitchen Rat", Faction.Enemy, UnitType.Mount, GameConfig.TableWidth - 140f, 950f, 38f, 85f, 60f, 2.0f, 140, 160f);

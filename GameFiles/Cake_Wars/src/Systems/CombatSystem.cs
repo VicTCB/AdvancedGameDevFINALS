@@ -46,7 +46,7 @@ public static class CombatSystem
 
             if (u.Faction == Faction.Ally && u.Position.X + u.Size.X >= GameConfig.TableWidth - 140f)
             {
-                state.WindowSealed += 3.5f * dt;
+                state.WindowSealed += GameConfig.WindowSealPerAllyPerSecond * dt;
                 continue;
             }
 

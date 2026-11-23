@@ -35,20 +35,25 @@ public class GameState
     public float[] LayerUnlockTimes = { 0f, -1f, -1f };
     public int CakeTier = 1;
     public float CakeExp = 0f;
-    public float[] ExpMilestones = { 0f, 180f, 480f };
+    public float[] ExpMilestones = { 0f, 1800f, 5400f };
+
+    public int EnemyTier => GameElapsedTime >= GameConfig.EnemyTier3Time ? 3
+                          : (GameElapsedTime >= GameConfig.EnemyTier2Time ? 2 : 1);
 
     public float WindowSealed = 0f;
     public float MaxWindowSealed = 100f;
 
     // Economy & Modifiers
-    public float Crumbs = 150f;
-    public float CrumbRate = 12f;
+    public float Crumbs = 200f;
+    public float CrumbRate = 7f;
     public float AllyDamageMultiplier = 1.0f;
     public float AllyDefenseMultiplier = 1.0f;
 
     // Ultimates
-    public float UltimateCooldownMax = 15f;
+    public float UltimateCooldownMultiplier = 1.0f; // Ube buff lowers this
     public float UltimateTimer = 0f;
+
+    public float GetUltimateCooldown() => GameConfig.UltimateBaseCooldown(CakeTier) * UltimateCooldownMultiplier;
     public bool UltimateTargetingActive = false;
     public float DampClothSweepX = -1f;
 
@@ -146,7 +151,7 @@ public class GameState
                 BuffDescription = "Ultimate cooldown cut by 40%",
                 QuestDescription = "Kill 12 Bugs",
                 TargetCount = 12,
-                ApplyBuff = () => { UltimateCooldownMax *= 0.6f; AssignNextFlavor("ube"); }
+                ApplyBuff = () => { UltimateCooldownMultiplier *= 0.6f; AssignNextFlavor("ube"); }
             },
             new FlavorOption
             {
