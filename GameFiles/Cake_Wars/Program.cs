@@ -363,12 +363,20 @@ class Program
         if (state.CakeTier < 3 && state.CakeExp >= state.ExpMilestones[state.CakeTier])
         {
             state.CakeTier++;
-            state.CurrentPhase = GamePhase.FlavorSelection;
-            RollFlavorChoices();
         }
 
         if (state.CakeHp <= 0) state.CurrentPhase = GamePhase.GameOver;
         if (state.WindowSealed >= state.MaxWindowSealed) state.CurrentPhase = GamePhase.Victory;
+
+        // 8. Flavor Buff Offers (time / layer / level prerequisites)
+        if (state.FlavorBuffCooldown > 0f) state.FlavorBuffCooldown -= dt;
+
+        if (state.CurrentPhase == GamePhase.Playing && state.IsNextFlavorBuffReady())
+        {
+            state.FlavorBuffsOffered++;
+            state.CurrentPhase = GamePhase.FlavorSelection;
+            RollFlavorChoices();
+        }
     }
 
     static void UpdateBottomPanelInput()
@@ -496,6 +504,7 @@ class Program
             {
                 state.Crumbs -= layerCost;
                 state.CakeTurrets[state.CakeLayersUnlocked].Unlocked = true;
+                state.LayerUnlockTimes[state.CakeLayersUnlocked] = state.GameElapsedTime;
                 state.CakeLayersUnlocked++;
             }
         }
@@ -585,6 +594,7 @@ class Program
                 chosen.IsActiveQuest = true;
                 state.ActiveQuests.Add(chosen);
                 state.FlavorPool.Remove(chosen);
+                state.FlavorBuffCooldown = GameState.FlavorBuffCooldownAfterPick;
                 state.CurrentPhase = GamePhase.Playing;
                 break;
             }

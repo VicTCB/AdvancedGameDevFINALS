@@ -248,7 +248,7 @@ public static class UIRenderer
     public static void DrawFlavorSelectionModal(GameState state)
     {
         Raylib.DrawRectangle(0, 0, GameConfig.ScreenWidth, GameConfig.ScreenHeight, new Color(0, 0, 0, 190));
-        Raylib.DrawText("CAKE EVOLVED! SELECT A FLAVOR BUFF", GameConfig.ScreenWidth / 2 - 280, 160, 28, Color.Gold);
+        Raylib.DrawText("NEW FLAVOR READY! SELECT A FLAVOR BUFF", GameConfig.ScreenWidth / 2 - 300, 160, 28, Color.Gold);
 
         Vector2 mousePos = Raylib.GetMousePosition();
 
