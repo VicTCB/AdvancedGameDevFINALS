@@ -400,8 +400,9 @@ class Program
 
         if (state.ActiveTab == BottomTab.Recipes)
         {
+            // Unit 1: Ground Slot (Swapped to Long Dough -> Long Bread -> Eclair)
             int gCost = state.CakeTier == 1 ? 25 : (state.CakeTier == 2 ? 45 : 75);
-            string gName = state.CakeTier == 1 ? "Wet Flour" : (state.CakeTier == 2 ? "Naked Cupcake" : "Frosted Cupcake");
+            string gName = state.CakeTier == 1 ? "Long Dough" : (state.CakeTier == 2 ? "Long Bread" : "Eclair");
             float gHp = (state.CakeTier == 1 ? 110f : (state.CakeTier == 2 ? 180f : 290f)) * state.AllyDefenseMultiplier;
             float gSpeed = state.CakeTier == 1 ? 75f : (state.CakeTier == 2 ? 70f : 68f);
             float gDmg = (state.CakeTier == 1 ? 18f : (state.CakeTier == 2 ? 28f : 44f)) * state.AllyDamageMultiplier;
@@ -424,6 +425,7 @@ class Program
                 });
             }
 
+            // Unit 2: Ranged Slot
             int rCost = GameConfig.RangedUnitCost(state.CakeTier);
             string rName = state.CakeTier == 1 ? "Cookie Dough" : (state.CakeTier == 2 ? "Baked Cookie" : "Choco Cookie");
             float rHp = (state.CakeTier == 1 ? 81f : (state.CakeTier == 2 ? 125f : 188f)) * state.AllyDefenseMultiplier;
@@ -450,8 +452,9 @@ class Program
                 });
             }
 
+            // Unit 3: Mount / Big Slot (Swapped to Wet Flour -> Naked Cupcake -> Frosted Cupcake)
             int mCost = state.CakeTier == 1 ? 90 : (state.CakeTier == 2 ? 140 : 210);
-            string mName = state.CakeTier == 1 ? "Long Dough" : (state.CakeTier == 2 ? "Long Bread" : "Eclair");
+            string mName = state.CakeTier == 1 ? "Wet Flour" : (state.CakeTier == 2 ? "Naked Cupcake" : "Frosted Cupcake");
             float mHp = (state.CakeTier == 1 ? 320f : (state.CakeTier == 2 ? 550f : 880f)) * state.AllyDefenseMultiplier;
             float mSpeed = state.CakeTier == 1 ? 45f : (state.CakeTier == 2 ? 42f : 40f);
             float mDmg = (state.CakeTier == 1 ? 35f : (state.CakeTier == 2 ? 55f : 85f)) * state.AllyDamageMultiplier;
@@ -474,6 +477,7 @@ class Program
                 });
             }
 
+            // Unit 4: Flying Slot
             int fCost = state.CakeTier == 1 ? 80 : (state.CakeTier == 2 ? 110 : 150);
             string fName = state.CakeTier == 1 ? "Flour Puff" : (state.CakeTier == 2 ? "Powder Sugar" : "Cocoa Powder");
             float fHp = (state.CakeTier == 1 ? 90f : (state.CakeTier == 2 ? 140f : 210f)) * state.AllyDefenseMultiplier;

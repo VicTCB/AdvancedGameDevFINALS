@@ -146,7 +146,7 @@ public static class UIRenderer
         if (state.ActiveTab == BottomTab.Recipes)
         {
             int gCost = state.CakeTier == 1 ? 25 : (state.CakeTier == 2 ? 45 : 75);
-            string gName = state.CakeTier == 1 ? "Wet Flour" : (state.CakeTier == 2 ? "Naked Cupcake" : "Frosted Cupcake");
+            string gName = state.CakeTier == 1 ? "Long Dough" : (state.CakeTier == 2 ? "Long Bread" : "Eclair");
             float gTime = state.CakeTier == 1 ? 2.0f : (state.CakeTier == 2 ? 3.0f : 4.5f);
             DrawActionButton(new Rectangle(20, 646, 170, 60), gName, $"{gCost}c | {gTime:F1}s", state.Crumbs >= gCost && state.OvenQueue.Count < 4, m);
 
@@ -156,7 +156,7 @@ public static class UIRenderer
             DrawActionButton(new Rectangle(200, 646, 170, 60), rName, $"{rCost}c | {rTime:F1}s", state.Crumbs >= rCost && state.OvenQueue.Count < 4, m);
 
             int mCost = state.CakeTier == 1 ? 90 : (state.CakeTier == 2 ? 140 : 210);
-            string mName = state.CakeTier == 1 ? "Long Dough" : (state.CakeTier == 2 ? "Long Bread" : "Eclair");
+            string mName = state.CakeTier == 1 ? "Wet Flour" : (state.CakeTier == 2 ? "Naked Cupcake" : "Frosted Cupcake");
             float mTime = state.CakeTier == 1 ? 6.0f : (state.CakeTier == 2 ? 7.5f : 9.0f);
             DrawActionButton(new Rectangle(380, 646, 170, 60), mName, $"{mCost}c | {mTime:F1}s", state.Crumbs >= mCost && state.OvenQueue.Count < 4, m);
 
